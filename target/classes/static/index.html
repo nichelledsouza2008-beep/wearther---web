@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wearther</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1714;
+    --ink-soft: #5c554e;
+    --paper: #f5f2ed;
+    --paper-warm: #ede9e2;
+    --amber: #c8882a;
+    --amber-light: #f0d49a;
+    --border: rgba(26,23,20,0.12);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+  }
+
+  body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 2rem 2.5rem 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .logotype {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .logotype em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .tagline {
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 540px;
+  }
+
+  .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+
+  .headline em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .sub {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: white;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .input-row:focus-within {
+    box-shadow: 0 0 0 2px var(--amber-light);
+  }
+
+  #city-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0.85rem 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--ink);
+  }
+
+  #city-input::placeholder {
+    color: #b0aa9f;
+  }
+
+  .btn {
+    border: none;
+    border-left: 1px solid var(--border);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.85rem 1.4rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn:hover { background: #2d2926; }
+  .btn:active { background: var(--amber); }
+  .btn:disabled { background: #b0aa9f; cursor: not-allowed; }
+
+  .result-area {
+    margin-top: 2rem;
+    min-height: 160px;
+  }
+
+  .result-box {
+    background: var(--paper-warm);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-city {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 0.75rem;
+  }
+
+  .result-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .loading-dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 160px;
+    display: none;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--amber);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50%       { opacity: 1; transform: scale(1); }
+  }
+
+  .error-msg {
+    font-size: 0.85rem;
+    color: #b84444;
+    margin-top: 0.75rem;
+    display: none;
+  }
+
+  footer {
+    padding: 1.5rem 2.5rem;
+    font-size: 0.7rem;
+    color: #b0aa9f;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .weather-strip {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logotype">w<em>ea</em>rther</span>
+  <span class="tagline">— dress for the day</span>
+</header>
+
+<main>
+  <div class="card">
+    <h1 class="headline">What should<br>I <em>wear</em> today?</h1>
+    <p class="sub">Enter your city and we'll check the weather,<br>then suggest an outfit for you.</p>
+
+    <div class="input-row">
+      <input
+        type="text"
+        id="city-input"
+        placeholder="e.g. Chennai, London, New York…"
+        autocomplete="off"
+        autofocus
+      />
+      <button class="btn" id="submit-btn">Suggest</button>
+    </div>
+
+    <div class="error-msg" id="error-msg">Couldn't reach the server. Is it running?</div>
+
+    <div class="result-area">
+      <div class="loading-dots" id="loading">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <div class="result-box" id="result-box">
+        <div class="result-city" id="result-city"></div>
+        <div class="result-text" id="result-text"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>powered by weather + AI</span>
+  <div class="weather-strip">
+    <span>real-time data</span>
+    <span>AI outfit matching</span>
+  </div>
+</footer>
+
+<script>
+  const input   = document.getElementById('city-input');
+  const btn     = document.getElementById('submit-btn');
+  const loading = document.getElementById('loading');
+  const box     = document.getElementById('result-box');
+  const cityLbl = document.getElementById('result-city');
+  const textEl  = document.getElementById('result-text');
+  const errEl   = document.getElementById('error-msg');
+
+  async function fetchOutfit() {
+    const city = input.value.trim();
+    if (!city) { input.focus(); return; }
+
+    btn.disabled = true;
+    loading.style.display = 'flex';
+    box.style.display     = 'none';
+    errEl.style.display   = 'none';
+
+    try {
+      const res  = await fetch(`/api/outfit?city=${encodeURIComponent(city)}`);
+      if (!res.ok) throw new Error(res.statusText);
+      const data = await res.json();
+
+      cityLbl.textContent = data.city.toUpperCase();
+      textEl.textContent  = data.suggestion;
+      box.style.display   = 'block';
+    } catch (e) {
+      errEl.style.display = 'block';
+    } finally {
+      loading.style.display = 'none';
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', fetchOutfit);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') fetchOutfit(); });
+</script>
+</body>
+</html>

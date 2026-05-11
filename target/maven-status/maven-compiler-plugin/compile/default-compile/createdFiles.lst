@@ -1,0 +1,5 @@
+com\weartherweb\demo\controller\Outfitcontroller.class
+com\weartherweb\demo\controller\Outfitcontroller$OutfitResponse.class
+com\weartherweb\demo\service\GroqService.class
+com\weartherweb\demo\DemoApplication.class
+com\weartherweb\demo\service\WeatherService.class
