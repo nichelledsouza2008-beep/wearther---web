@@ -15,7 +15,7 @@ public class GroqService
 
     public GroqService()
     {
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         this.apikey = dotenv.get("GROQ");
     }
 

@@ -15,7 +15,7 @@ public class WeatherService
     private String apikey;
     public WeatherService()
     {
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         this.apikey = dotenv.get("OPENWEATHER_API_KEY");
     }
     public String getWeather(String city) throws Exception
